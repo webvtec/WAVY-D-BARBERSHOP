@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WAVY D</title>
+  <title>WAVY D BARBERSHOP</title>
   <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/dqqr9udcs/image/upload/v1778298011/WAVY_D_LOGO_e5klau.jpg">
   <link rel="icon" type="image/png" sizes="16x16" href="https://res.cloudinary.com/dqqr9udcs/image/upload/v1778298011/WAVY_D_LOGO_e5klau.jpg">
   <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/dqqr9udcs/image/upload/v1778298011/WAVY_D_LOGO_e5klau.jpg">
@@ -161,7 +161,7 @@
       justify-content: center;
       gap: 8px;
       background: var(--surface);
-      padding: 16px 20px;
+      padding: 12px 12px;
       border-bottom: 1px solid var(--border);
       flex-wrap: wrap;
     }
@@ -169,17 +169,24 @@
       background: transparent;
       color: var(--text-dim);
       border: 1px solid rgba(255,255,255,0.1);
-      padding: 11px 22px;
+      padding: 10px 14px;
       border-radius: 6px;
       cursor: pointer;
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 700;
       font-size: 11px;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       text-transform: uppercase;
       transition: all 0.2s ease;
       margin: 0;
       box-shadow: none;
+      white-space: nowrap;
+      flex-shrink: 1;
+      min-width: 0;
+    }
+    @media (max-width: 480px) {
+      .top-menu { gap: 6px; padding: 10px 8px; }
+      .top-menu button { padding: 9px 10px; font-size: 10px; letter-spacing: 1px; }
     }
     .top-menu button:hover {
       border-color: var(--neon);
