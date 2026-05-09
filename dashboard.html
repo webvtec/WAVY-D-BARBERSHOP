@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRAVIS THE BARBER</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/dqqr9udcs/image/upload/v1777851528/TRAVIS_THE_BARBER_LOGO_y1lgfv.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://res.cloudinary.com/dqqr9udcs/image/upload/v1777851528/TRAVIS_THE_BARBER_LOGO_y1lgfv.jpg">
+  <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/dqqr9udcs/image/upload/v1777851528/TRAVIS_THE_BARBER_LOGO_y1lgfv.jpg">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://res.cloudinary.com/dqqr9udcs/image/upload/v1777851528/TRAVIS_THE_BARBER_LOGO_y1lgfv.jpg">
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Barlow+Condensed:wght@400;600;700;900&family=Bebas+Neue&family=Barlow:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================================
+       TRAVIS THE BARBER — Admin Dashboard
+       Neon Street Dark — matches index.html palette exactly
+       Midnight black · Electric cyan · Neon red · Hot gold
+       ========================================================= */
+
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Barlow+Condensed:wght@400;600;700;900&family=Bebas+Neue&family=Barlow:wght@400;600;700&display=swap');
+
+    :root {
+      --bg:          #07070F;
+      --surface:     #0D0D1F;
+      --surface2:    #131328;
+      --neon:        #00D4FF;
+      --neon-glow:   rgba(0,212,255,0.18);
+      --neon-dim:    rgba(0,212,255,0.08);
+      --hot:         #FF2052;
+      --hot-glow:    rgba(255,32,82,0.2);
+      --amber:       #FFD23F;
+      --text:        #D8D8F0;
+      --text-dim:    #525278;
+      --border:      rgba(255,255,255,0.06);
+      --border-neon: rgba(0,212,255,0.2);
+
+      /* legacy aliases so inline JS styles still resolve */
+      --accent:      #FF2052;
+      --accent2:     #C8192D;
+      --red:         #FF2052;
+      --red-deep:    #C8192D;
+      --gold:        #FFD23F;
+      --gold-soft:   #FFE580;
+      --cream:       #F2F0FF;
+      --cream-soft:  #E8E4FF;
+      --paper:       #F5F3FF;
+      --ink:         #07070F;
+      --ink-soft:    #0D0D1F;
+      --ink-line:    #1A1A35;
+      --text-ink:    #0D0B1E;
+      --primary:     #07070F;
+      --white:       #F2F0FF;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background:
+        radial-gradient(ellipse 700px 500px at -10% 20%, rgba(0,212,255,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 600px 400px at 110% 80%, rgba(255,32,82,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 900px 600px at 50% 100%, rgba(255,210,63,0.025) 0%, transparent 60%),
+        #07070F;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px; left: -200px;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,212,255,0.055) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      animation: blobPulse 18s ease-in-out infinite alternate;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -150px; right: -150px;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,32,82,0.05) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      animation: blobPulse 22s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes blobPulse {
+      from { opacity: 0.4; transform: scale(0.92); }
+      to   { opacity: 1;   transform: scale(1.08); }
+    }
+
+    body > div, body > #dashboardContent { position: relative; z-index: 1; }
+
+    /* ================ HEADER ================ */
+    .header-bar {
+      background: rgba(7,7,15,0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 0 20px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: 4px;
+      color: var(--text);
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-bar::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, var(--hot) 15%, var(--neon) 40%, var(--amber) 60%, var(--hot) 85%, transparent 100%);
+      background-size: 300% 100%;
+      animation: stripeFlow 4s linear infinite;
+    }
+    @keyframes stripeFlow {
+      0%   { background-position: 200% center; }
+      100% { background-position: -100% center; }
+    }
+    .header-bar .brand-hot { color: var(--hot); }
+    .header-bar .brand-admin {
+      color: var(--neon);
+      font-size: 11px;
+      letter-spacing: 5px;
+      font-weight: 600;
+      margin-left: 12px;
+      opacity: 0.7;
+    }
+
+    /* ================ TOP NAV TABS ================ */
+    .top-menu {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--surface);
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .top-menu button {
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 11px 22px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      margin: 0;
+      box-shadow: none;
+    }
+    .top-menu button:hover {
+      border-color: var(--neon);
+      color: var(--neon);
+      background: var(--neon-dim);
+      box-shadow: 0 0 14px var(--neon-glow);
+      transform: none;
+    }
+    .top-menu button:active { transform: scale(0.97); }
+    .top-menu button.active-tab {
+      border-color: var(--neon);
+      color: var(--neon);
+      background: var(--neon-dim);
+    }
+
+    /* ================ ADMIN CONTAINER ================ */
+    .admin-container {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 40px 32px 36px;
+      background: var(--surface);
+      border-radius: 8px;
+      border: 1px solid var(--border-neon);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.06);
+      position: relative;
+    }
+    .admin-container::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--hot), var(--neon), var(--amber));
+      border-radius: 8px 8px 0 0;
+    }
+    /* Remove the old ::after ornament */
+    .admin-container::after { display: none; }
+
+    h2 {
+      color: var(--text);
+      text-align: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      font-size: 36px;
+      margin: 8px 0 6px;
+      text-transform: uppercase;
+      text-shadow: none;
+    }
+    h2::after {
+      content: '';
+      display: block;
+      width: 48px;
+      height: 3px;
+      margin: 16px auto 24px;
+      background: linear-gradient(90deg, var(--hot), var(--neon));
+      border: none;
+      border-radius: 2px;
+    }
+    h2 span.accent { color: var(--neon); }
+
+    .admin-kicker {
+      text-align: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--hot);
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .admin-kicker::before,
+    .admin-kicker::after {
+      content: '';
+      width: 28px; height: 1px;
+      background: var(--hot);
+      opacity: 0.5;
+    }
+
+    /* ================ FORM FIELDS ================ */
+    input[type="text"], input[type="date"], input[type="time"], select {
+      width: 100%;
+      padding: 11px 12px;
+      margin-bottom: 14px;
+      border: none;
+      border-bottom: 1.5px solid rgba(0,212,255,0.2);
+      border-radius: 0;
+      box-sizing: border-box;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      background: transparent;
+      color: var(--text);
+      transition: border-color 0.2s ease;
+      color-scheme: dark;
+    }
+    input::placeholder { color: var(--text-dim); }
+    input:focus, select:focus {
+      outline: none;
+      border-bottom-color: var(--neon);
+      box-shadow: 0 1.5px 0 var(--neon);
+    }
+    select {
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2300D4FF' d='M6 8 0 0h12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 34px;
+      cursor: pointer;
+    }
+    select option { background: var(--surface2); color: var(--text); }
+
+    /* ================ BUTTONS ================ */
+    button {
+      background: transparent;
+      color: var(--neon);
+      border: 1px solid var(--neon);
+      padding: 13px 26px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 14px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      box-shadow: none;
+    }
+    button:hover {
+      background: var(--neon-dim);
+      box-shadow: 0 0 18px var(--neon-glow);
+      color: var(--neon);
+      border-color: var(--neon);
+      transform: none;
+    }
+    button:active { transform: scale(0.97); box-shadow: none; }
+
+    /* ================ UPLOAD AREA ================ */
+    .upload-area {
+      border: 2px dashed rgba(0,212,255,0.25);
+      border-radius: 8px;
+      padding: 44px 24px;
+      text-align: center;
+      margin-bottom: 18px;
+      cursor: pointer;
+      background: var(--surface2);
+      transition: all 0.25s ease;
+      position: relative;
+    }
+    .upload-area:hover {
+      background: var(--neon-dim);
+      border-color: var(--neon);
+      box-shadow: 0 0 20px var(--neon-glow);
+      border-style: solid;
+    }
+    .upload-area input[type="file"] {
+      position: absolute; inset: 0;
+      opacity: 0; cursor: pointer;
+      width: 100%; height: 100%; margin: 0;
+    }
+    .upload-area .upload-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+      color: var(--neon);
+    }
+    .upload-area p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-dim);
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 0.5px;
+    }
+    .upload-area strong {
+      color: var(--neon);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 13px;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+
+    #imagePreview {
+      display: none; /* replaced by multi-file preview grid */
+    }
+    #previewGrid {
+      display: none;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      padding: 10px;
+      background: var(--surface2);
+      border: 1px solid rgba(0,212,255,0.15);
+      border-radius: 8px;
+    }
+    #uploadProgress { display: none; margin-bottom: 14px; }
+    #uploadProgress progress {
+      width: 100%; height: 4px; border-radius: 2px;
+      accent-color: var(--neon);
+    }
+
+    /* ================ ADMIN GALLERY ================ */
+    .gallery-category { margin-top: 40px; }
+    .gallery-category h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--neon);
+      margin: 0 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .gallery-category h3::before {
+      content: '';
+      width: 4px; height: 16px;
+      background: var(--hot);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .gallery-category h3::after { display: none; }
+
+    .gallery-wrapper { max-width: 1100px; margin: 0 auto; padding: 0 4px; }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    @media (min-width: 768px) { .gallery-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .gallery-grid div { position: relative; border-radius: 6px; overflow: hidden; }
+    .gallery-grid img {
+      width: 100%; height: 220px; object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .gallery-grid img:hover {
+      transform: scale(1.03);
+      border-color: var(--neon);
+      box-shadow: 0 0 20px var(--neon-glow);
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 8px; right: 8px;
+      background: rgba(7,7,15,0.85);
+      color: var(--hot);
+      border: 1px solid var(--hot);
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 0;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-family: 'Barlow Condensed', sans-serif;
+      box-shadow: none;
+      transition: all 0.15s ease;
+      backdrop-filter: blur(6px);
+    }
+    .remove-btn:hover {
+      background: var(--hot);
+      color: #fff;
+      box-shadow: 0 0 10px var(--hot-glow);
+      transform: none;
+    }
+
+    /* ================ TABLE ================ */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 28px;
+      background: var(--surface2);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    th, td {
+      border: none;
+      border-bottom: 1px solid var(--border);
+      padding: 13px 10px;
+      text-align: center;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--text);
+    }
+    th {
+      background: var(--surface);
+      color: var(--neon);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-size: 11px;
+      padding: 14px 10px;
+      border-bottom: 1px solid var(--border-neon);
+    }
+
+    /* ================ SECTIONS ================ */
+    .content-section { display: none; }
+    .content-section.active { display: block; animation: fadeUp 0.35s ease; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .clear-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 26px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .clear-container input {
+      padding: 11px 14px;
+      border: 1px solid var(--border-neon);
+      border-radius: 6px;
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    /* ================ RESERVATION CARDS ================ */
+    .reservation-card {
+      background: var(--surface2);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--hot);
+      padding: 20px 22px;
+      margin: 14px 0;
+      position: relative;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: none;
+    }
+    .reservation-card:hover {
+      border-color: var(--border-neon);
+      border-left-color: var(--neon);
+      box-shadow: 0 0 20px rgba(0,212,255,0.06);
+      transform: none;
+    }
+    .reservation-card::before { display: none; }
+
+    .reservation-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .reservation-header h3 {
+      margin: 0;
+      color: var(--text);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+
+    .badge {
+      padding: 5px 11px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-family: 'Barlow Condensed', sans-serif;
+      border: none;
+      box-shadow: none;
+    }
+    .badge.today    { background: rgba(255,32,82,0.15);   color: var(--hot); }
+    .badge.upcoming { background: rgba(0,212,255,0.12);   color: var(--neon); }
+    .badge.tomorrow { background: rgba(255,210,63,0.12);  color: var(--amber); }
+    .badge.past     { background: rgba(255,255,255,0.05); color: var(--text-dim); }
+
+    .reservation-group {
+      margin-top: 32px;
+      margin-bottom: 14px;
+      padding: 12px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border-neon);
+      color: var(--neon);
+      border-radius: 6px;
+      font-size: 11px;
+      text-align: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      position: relative;
+      box-shadow: 0 0 14px rgba(0,212,255,0.06);
+      text-shadow: none;
+    }
+    .reservation-group::after { display: none; }
+
+    .highlighted {
+      border-color: var(--neon) !important;
+      box-shadow: 0 0 0 2px rgba(0,212,255,0.25), 0 0 20px var(--neon-glow) !important;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .reservation-card .action-buttons {
+      display: flex;
+      justify-content: flex-start;
+      margin-top: 14px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .cancel-btn, .deposit-btn, .status-btn {
+      flex: 0 1 auto;
+      padding: 9px 14px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      border-radius: 5px;
+      border: 1px solid;
+      cursor: pointer;
+      margin-bottom: 0;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: all 0.18s ease;
+      min-width: 90px;
+      box-shadow: none;
+    }
+    .cancel-btn {
+      background: transparent;
+      color: var(--hot);
+      border-color: rgba(255,32,82,0.35);
+    }
+    .cancel-btn:hover {
+      background: rgba(255,32,82,0.12);
+      border-color: var(--hot);
+      box-shadow: 0 0 10px var(--hot-glow);
+      transform: none;
+    }
+    .deposit-btn {
+      background: transparent;
+      color: var(--neon);
+      border-color: var(--border-neon);
+    }
+    .deposit-btn:hover {
+      background: var(--neon-dim);
+      border-color: var(--neon);
+      box-shadow: 0 0 10px var(--neon-glow);
+      transform: none;
+    }
+    .status-btn {
+      background: transparent;
+      color: var(--amber);
+      border-color: rgba(255,210,63,0.3);
+    }
+    .status-btn:hover {
+      background: rgba(255,210,63,0.1);
+      border-color: var(--amber);
+      transform: none;
+    }
+
+    #unavailableDateInput, #startTimeInput, #endTimeInput {
+      width: 100%;
+      padding: 11px 12px;
+      margin-bottom: 14px;
+      border: none;
+      border-bottom: 1.5px solid rgba(0,212,255,0.2);
+      border-radius: 0;
+      box-sizing: border-box;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      background: transparent;
+      color: var(--text);
+      color-scheme: dark;
+    }
+
+    .status-completed { color: #4ADE80; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; font-size: 11px; font-family: 'Barlow Condensed', sans-serif; }
+    .status-not { color: var(--hot); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; font-size: 11px; font-family: 'Barlow Condensed', sans-serif; }
+    .status-none { color: var(--text-dim); font-style: italic; font-size: 12px; }
+
+    label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      display: block;
+      margin-bottom: 5px;
+      margin-top: 16px;
+      font-family: 'Barlow Condensed', sans-serif;
+    }
+
+    /* Unavailable list */
+    #unavailableDatesList li {
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      padding: 10px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    /* =========================================================
+       OVERRIDES for hardcoded hex colours in inline JS styles
+       ========================================================= */
+    [style*="color:#F4ECDD"], [style*="color: #F4ECDD"] { color: var(--text) !important; }
+    [style*="color:#C9A961"], [style*="color: #C9A961"] { color: var(--neon) !important; }
+    [style*="background:#C9A961"], [style*="background: #C9A961"] { background: var(--neon) !important; }
+    [style*="color:#9A9486"], [style*="color: #9A9486"] { color: var(--text-dim) !important; }
+    [style*="background:#0E0E10"], [style*="background-color:#0E0E10"] { background-color: var(--bg) !important; }
+    [style*="border-top:4px solid #e53935"] { border-top-color: var(--hot) !important; }
+    [style*="background:#e53935"], [style*="background-color:#e53935"] { background: var(--hot) !important; }
+    [style*="color:#e53935"] { color: var(--hot) !important; }
+    [style*="border-top:4px solid #ff9800"] { border-top-color: var(--amber) !important; }
+    [style*="color:#ff9800"] { color: var(--amber) !important; }
+    [style*="background:#4CAF50"], [style*="background-color:#4CAF50"] { background: #22c55e !important; }
+    [style*="color:#1a1a1a"] { color: var(--text) !important; }
+    [style*="background:#fff;"], [style*="background:#fff "], [style*="background: #fff;"] { background: var(--surface) !important; color: var(--text) !important; }
+    [style*="background:#fafafa"] { background: var(--surface2) !important; }
+    [style*="border:1px solid #ddd"] { border-color: var(--border) !important; }
+    [style*="color:#000"] { color: var(--text) !important; }
+    [style*="color: #000"] { color: var(--text) !important; }
+    [style*="color:#333"] { color: var(--text) !important; }
+    [style*="color:#555"] { color: var(--text-dim) !important; }
+    [style*="color:#666"] { color: var(--text-dim) !important; }
+    [style*="background:#ccc"] { background: var(--surface2) !important; color: var(--text-dim) !important; }
+    [style*="background:#eee"] { background: var(--surface2) !important; color: var(--text-dim) !important; }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== CHECKING ACCESS OVERLAY ===== -->
+  <div id="accessOverlay" style="
+    position:fixed;inset:0;z-index:99999;
+    background:
+      radial-gradient(ellipse 700px 500px at -10% 20%, rgba(0,212,255,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 400px at 110% 80%, rgba(255,32,82,0.05) 0%, transparent 60%),
+      #07070F;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:22px;">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:5px;color:#FF2052;text-transform:uppercase;">Admin Portal</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:40px;letter-spacing:-0.5px;color:#D8D8F0;text-align:center;text-transform:uppercase;">Checking Access</div>
+    <div style="width:48px;height:2px;background:linear-gradient(90deg,#FF2052,#00D4FF);border-radius:1px;"></div>
+    <div style="display:flex;gap:8px;">
+      <span style="width:6px;height:6px;border-radius:50%;background:#00D4FF;animation:dotpulse 1.2s ease-in-out infinite;display:inline-block;"></span>
+      <span style="width:6px;height:6px;border-radius:50%;background:#00D4FF;animation:dotpulse 1.2s ease-in-out 0.4s infinite;display:inline-block;"></span>
+      <span style="width:6px;height:6px;border-radius:50%;background:#00D4FF;animation:dotpulse 1.2s ease-in-out 0.8s infinite;display:inline-block;"></span>
+    </div>
+    <div id="accessStatus" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:#525278;letter-spacing:4px;text-transform:uppercase;">Verifying identity…</div>
+  </div>
+  <style>
+    @keyframes dotpulse {
+      0%,100%{opacity:0.2;transform:scale(0.8);}
+      50%{opacity:1;transform:scale(1.2);}
+    }
+    #dashboardContent{display:none;}
+  </style>
+
+  <div id="dashboardContent">
+  <div class="header-bar">TRAVIS <span class="brand-hot">THE</span> BARBER <span class="brand-admin">— ADMIN</span></div>
+
+  <div class="top-menu">
+    <button onclick="showSection('gallerySection')">Gallery</button>
+    <button onclick="showSection('reservationsPage')">Reservations</button>
+    <button onclick="showSection('unavailableDaysSection')">Unavailable Days</button>
+    <button onclick="showSection('homeCallsSection')">🏠 Home Calls</button>
+  </div>
+
+  <!-- Gallery Management -->
+  <div id="gallerySection" class="admin-container content-section">
+    <div class="admin-kicker">The Cut Book</div>
+    <h2>Upload Photo</h2>
+
+    <!-- Device Upload Area -->
+    <div class="upload-area" id="uploadArea" ondrop="handleDrop(event)" ondragover="event.preventDefault()">
+      <input type="file" id="photoFileInput" accept="image/*" multiple onchange="previewImages(event)"/>
+      <div class="upload-icon">📷</div>
+      <p><strong>Tap to choose photos</strong><br>or drag and drop here<br><span style="color:var(--neon);font-size:12px;letter-spacing:1px;">SELECT MULTIPLE AT ONCE</span></p>
+    </div>
+
+    <!-- Multi-file preview grid -->
+    <div id="previewGrid" style="display:none; display:none; gap:8px; flex-wrap:wrap; margin-bottom:14px;"></div>
+
+    <!-- Upload Progress -->
+    <div id="uploadProgress" style="display:none; margin-bottom:14px;">
+      <p style="font-size:11px; color:var(--text-dim); margin-bottom:6px; letter-spacing:2px; text-transform:uppercase; font-family:'Playfair Display',serif; font-style:italic;" id="uploadStatusText">Uploading…</p>
+      <progress id="progressBar" value="0" max="100"></progress>
+    </div>
+
+    <label for="photoCategorySelect">Select Category</label>
+    <select id="photoCategorySelect">
+      <option value="FADES">FADES</option>
+      <option value="KIDS CUT">KIDS CUT</option>
+      <option value="SPECIAL DESIGNS">SPECIAL DESIGNS</option>
+      <option value="ONE LEVEL">ONE LEVEL</option>
+      <option value="LADIES CUT">LADIES CUT</option>
+    </select>
+
+    <button onclick="uploadPhotos()" id="uploadBtn">Add Photos</button>
+
+    <div id="adminGallery"></div>
+  </div>
+
+  <!-- Reservations Section -->
+  <div class="admin-container content-section" id="reservationsPage">
+    <div class="admin-kicker">The Day Book</div>
+    <h2>Reservations</h2>
+    <div style="display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap;">
+      <input id="reservationSearch" placeholder="Search reservations…" type="text" style="flex:1; min-width:180px;"/>
+      <button onclick="searchReservations()" style="margin-bottom:0;">Search</button>
+    </div>
+    <div id="reservationsList"></div>
+    <div class="clear-container">
+      <input id="clearInput" placeholder='Type "CONFIRM" to clear past reservations' type="text"/>
+      <button onclick="clearReservations()">Clear Past Reservations</button>
+    </div>
+  </div>
+
+  <!-- Unavailable Days -->
+  <div class="admin-container content-section" id="unavailableDaysSection">
+    <div class="admin-kicker">The Calendar</div>
+    <h2>Unavailable Days</h2>
+    <label>Date</label>
+    <input id="unavailableDateInput" type="date"/>
+    <label style="display:flex; align-items:center; gap:8px; margin-top:16px;"><input checked id="allDayCheckbox" onchange="toggleTimeInputs()" type="checkbox" style="width:auto; margin:0;"/> All Day</label>
+    <div id="timeInputs" style="display:none; margin-top:10px;">
+      <label>From</label>
+      <input id="startTimeInput" type="time"/>
+      <label>Until</label>
+      <input id="endTimeInput" type="time"/>
+    </div>
+    <button onclick="addUnavailableDate()">Add Unavailable Date</button>
+    <h3 style="font-family:'Playfair Display',serif; font-weight:700; color:var(--text-ink); font-size:22px; margin-top:32px; margin-bottom:14px; text-align:center;">
+      <span style="display:block; font-family:'Playfair Display',serif; font-style:italic; font-size:11px; color:var(--red); letter-spacing:3px; text-transform:uppercase; font-weight:400; margin-bottom:2px;">Blocked Dates</span>
+      The Calendar
+    </h3>
+    <ul id="unavailableDatesList" style="font-family:'Inter',sans-serif; font-size:13px; list-style:none; padding:0;"></ul>
+  </div>
+
+  <!-- Home Call Requests Section -->
+  <div class="admin-container content-section" id="homeCallsSection">
+    <div class="admin-kicker">House Visits</div>
+    <h2>Home Call Requests</h2>
+    <div id="homeCallsList" style="margin-top:8px;"></div>
+  </div>
+
+  <!-- Conflict Modal -->
+  <div id="conflictModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:2000;">
+    <div style="background:#fff; padding:20px; border-radius:12px; max-width:450px; width:90%; max-height:80%; overflow-y:auto; box-shadow:0 4px 10px rgba(0,0,0,0.2); border-top:4px solid #ff9800;">
+      <h3 style="margin-bottom:10px; color:#ff9800;">⚠️ Conflicting Bookings</h3>
+      <p style="font-size:14px; color:#333; margin-bottom:15px;">The following bookings conflict. Please <strong>contact the client</strong> and <strong>cancel the booking</strong> before marking this time as unavailable.</p>
+      <div id="conflictList"></div>
+      <div style="text-align:right; margin-top:15px;">
+        <button onclick="closeConflictModal()" style="background:var(--primary); color:var(--accent); border:none; padding:8px 14px; border-radius:6px; cursor:pointer; margin-bottom:0;">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deposit Modal -->
+  <div id="depositModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:#fff; padding:24px; border-radius:12px; max-width:320px; width:90%; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.2); border-top:4px solid var(--accent);">
+      <h3 style="margin-bottom:15px; font-family:'Bebas Neue',cursive; letter-spacing:1px; color:var(--primary);">UPDATE PAYMENT STATUS</h3>
+      <label style="display:block; text-align:left; margin:10px 0; font-weight:normal; text-transform:none; letter-spacing:0;">
+        <input type="radio" name="depositChoice" value="Made"> 💵 PAYMENT MADE
+      </label>
+      <label style="display:block; text-align:left; margin:10px 0; font-weight:normal; text-transform:none; letter-spacing:0;">
+        <input type="radio" name="depositChoice" value="No"> ❌ NO PAYMENT MADE
+      </label>
+      <div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">
+        <button onclick="closeDepositModal()" style="background:#ccc; color:#333; border:none; padding:8px 16px; border-radius:6px; margin-bottom:0;">Cancel</button>
+        <button onclick="confirmDeposit()" style="background:#4CAF50; color:white; border:none; padding:8px 16px; border-radius:6px; margin-bottom:0;">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Modal -->
+  <div id="statusModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:1100;">
+    <div style="background:#fff; padding:24px; border-radius:12px; max-width:320px; width:90%; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.2); border-top:4px solid var(--accent);">
+      <h3 style="margin-bottom:15px; font-family:'Bebas Neue',cursive; letter-spacing:1px; color:var(--primary);">UPDATE BOOKING STATUS</h3>
+      <label style="display:block; text-align:left; margin:10px 0; font-weight:normal; text-transform:none; letter-spacing:0;">
+        <input type="radio" name="statusChoice" value="Completed"> ✅ Completed
+      </label>
+      <label style="display:block; text-align:left; margin:10px 0; font-weight:normal; text-transform:none; letter-spacing:0;">
+        <input type="radio" name="statusChoice" value="Not Completed"> ❌ Not Completed
+      </label>
+      <div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">
+        <button onclick="closeStatusModal()" style="background:#ccc; color:#333; border:none; padding:8px 16px; border-radius:6px; margin-bottom:0;">Cancel</button>
+        <button onclick="confirmStatus()" style="background:var(--primary); color:var(--accent); border:none; padding:8px 16px; border-radius:6px; margin-bottom:0;">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" style="visibility:hidden; min-width:250px; margin-left:-125px; background-color:#4CAF50; color:#fff; text-align:center; border-radius:8px; padding:14px; position:fixed; z-index:3000; left:50%; bottom:30px; font-size:15px; box-shadow:0 4px 12px rgba(0,0,0,0.2); opacity:0; transition:opacity 0.5s, bottom 0.5s; font-family:'Barlow',sans-serif;"></div>
+
+  <script>
+  const firebaseConfig = {
+  apiKey: "AIzaSyB-Ju8WQVdTqxGAHB_JBoC2kgZ3i2GOpxM",
+  authDomain: "travis-the-barber.firebaseapp.com",
+  projectId: "travis-the-barber",
+  storageBucket: "travis-the-barber.firebasestorage.app",
+  messagingSenderId: "713818270570",
+  appId: "1:713818270570:web:fe627ace00c4a3112ed313"
+};
+
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // ========== SECTION TOGGLE ==========
+    function showSection(sectionId) {
+      document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+      document.getElementById(sectionId).classList.add('active');
+      if (sectionId === 'homeCallsSection') loadHomeCalls();
+    }
+
+    // ========== HOME CALL REQUESTS ==========
+    function loadHomeCalls() {
+      const container = document.getElementById('homeCallsList');
+      container.innerHTML = '<p style="color:var(--text-dim); font-size:13px;">Loading…</p>';
+      db.collection('homeCallRequests').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+        if (snapshot.empty) {
+          container.innerHTML = '<p style="color:var(--text-dim); font-size:13px; text-align:center; padding:30px 0;">No home call requests yet.</p>';
+          return;
+        }
+        container.innerHTML = '';
+        snapshot.forEach(doc => {
+          const r = doc.data();
+          const dateStr = r.date ? (() => { const [y,m,d] = r.date.split('-'); return new Date(y,m-1,d).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}); })() : 'N/A';
+          const statusColor = r.status === 'Quoted' ? '#b8ff6e' : r.status === 'Declined' ? 'var(--hot)' : 'var(--amber)';
+          container.innerHTML += `
+            <div style="background:var(--surface2); border:1px solid rgba(184,255,110,0.15); border-left:4px solid #b8ff6e; border-radius:8px; padding:16px; margin-bottom:14px;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+                <div>
+                  <div style="font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:16px; color:var(--text); letter-spacing:1px;">🏠 ${r.name || 'N/A'}</div>
+                  <div style="font-size:11px; color:#b8ff6e; font-family:'Barlow Condensed',sans-serif; letter-spacing:2px; text-transform:uppercase;">Ref: ${r.refNum || doc.id}</div>
+                </div>
+                <span style="background:rgba(184,255,110,0.1); border:1px solid ${statusColor}; color:${statusColor}; padding:3px 10px; border-radius:20px; font-size:11px; font-family:'Barlow Condensed',sans-serif; letter-spacing:2px; font-weight:700; white-space:nowrap;">${r.status || 'Pending'}</span>
+              </div>
+              <div style="font-size:13px; color:var(--text); line-height:1.9;">
+                <div>📞 <strong>Phone:</strong> ${r.phone || 'N/A'}</div>
+                <div>📅 <strong>Date:</strong> ${dateStr}</div>
+                <div>💈 <strong>Service:</strong> ${r.service || 'N/A'}</div>
+                <div>📍 <strong>Location:</strong> ${r.location || 'N/A'}</div>
+                ${r.notes ? `<div>📝 <strong>Notes:</strong> ${r.notes}</div>` : ''}
+                <div style="color:var(--amber); margin-top:4px;">⚠️ Travel fee: <strong>$5,000+</strong> added to cut price</div>
+              </div>
+              <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+                <button onclick="updateHomeCallStatus('${doc.id}','Quoted')" style="padding:7px 14px; background:rgba(184,255,110,0.15); border:1px solid #b8ff6e; color:#b8ff6e; border-radius:5px; font-size:11px; font-family:'Barlow Condensed',sans-serif; letter-spacing:2px; font-weight:700; text-transform:uppercase; cursor:pointer;">✓ Quoted</button>
+                <button onclick="updateHomeCallStatus('${doc.id}','Declined')" style="padding:7px 14px; background:rgba(255,32,82,0.1); border:1px solid var(--hot); color:var(--hot); border-radius:5px; font-size:11px; font-family:'Barlow Condensed',sans-serif; letter-spacing:2px; font-weight:700; text-transform:uppercase; cursor:pointer;">✕ Decline</button>
+                <button onclick="deleteHomeCall('${doc.id}')" style="padding:7px 14px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:var(--text-dim); border-radius:5px; font-size:11px; font-family:'Barlow Condensed',sans-serif; letter-spacing:2px; font-weight:700; text-transform:uppercase; cursor:pointer;">🗑 Delete</button>
+              </div>
+            </div>
+          `;
+        });
+      });
+    }
+
+    function updateHomeCallStatus(id, status) {
+      db.collection('homeCallRequests').doc(id).update({ status });
+    }
+
+    function deleteHomeCall(id) {
+      if (confirm('Delete this home call request?')) {
+        db.collection('homeCallRequests').doc(id).delete();
+      }
+    }
+
+    function toggleTimeInputs() {
+      const isAllDay = document.getElementById('allDayCheckbox').checked;
+      document.getElementById('timeInputs').style.display = isAllDay ? 'none' : 'block';
+    }
+
+    // ========== DEVICE UPLOAD ==========
+    function previewImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const preview = document.getElementById('imagePreview');
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+
+      // Update upload area text
+      const uploadArea = document.getElementById('uploadArea');
+      uploadArea.querySelector('p').innerHTML = `<strong>${file.name}</strong><br><span style="color:#888;">Ready to upload</span>`;
+    }
+
+    // ========== MULTI-FILE PREVIEW ==========
+    function previewImages(event) {
+      const files = Array.from(event.target.files);
+      if (!files.length) return;
+      renderPreviews(files);
+    }
+
+    function handleDrop(event) {
+      event.preventDefault();
+      const files = Array.from(event.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+      if (!files.length) return;
+      // Merge into file input (we'll store them on a global)
+      window._pendingFiles = files;
+      renderPreviews(files);
+    }
+
+    function renderPreviews(files) {
+      const grid = document.getElementById('previewGrid');
+      grid.innerHTML = '';
+      grid.style.display = 'flex';
+      const uploadArea = document.getElementById('uploadArea');
+      uploadArea.querySelector('p').innerHTML = `<strong>${files.length} photo${files.length > 1 ? 's' : ''} selected</strong><br><span style="color:var(--neon);font-size:12px;">Ready to upload</span>`;
+
+      files.forEach((file, i) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const wrap = document.createElement('div');
+          wrap.style.cssText = 'position:relative;width:80px;height:80px;border-radius:6px;overflow:hidden;border:1px solid rgba(0,212,255,0.3);flex-shrink:0;';
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+          const badge = document.createElement('div');
+          badge.style.cssText = 'position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);font-size:9px;color:#fff;text-align:center;padding:2px;font-family:Barlow Condensed,sans-serif;letter-spacing:0.5px;';
+          badge.textContent = i + 1;
+          wrap.appendChild(img);
+          wrap.appendChild(badge);
+          grid.appendChild(wrap);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // ========== MULTI-FILE UPLOAD ==========
+    async function uploadPhotos() {
+      const fileInput = document.getElementById('photoFileInput');
+      const categorySelect = document.getElementById('photoCategorySelect');
+      const category = categorySelect.value.trim();
+
+      // Support both file input and drag-drop
+      const files = window._pendingFiles && window._pendingFiles.length
+        ? window._pendingFiles
+        : Array.from(fileInput.files);
+
+      if (!files.length) {
+        alert('Please select at least one photo first.');
+        return;
+      }
+      if (!category) {
+        alert('Please select a category.');
+        return;
+      }
+
+      const uploadBtn = document.getElementById('uploadBtn');
+      uploadBtn.disabled = true;
+
+      const progressDiv = document.getElementById('uploadProgress');
+      const progressBar = document.getElementById('progressBar');
+      const statusText = document.getElementById('uploadStatusText');
+      progressDiv.style.display = 'block';
+
+      let completed = 0;
+      let failed = 0;
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        statusText.textContent = `Uploading ${i + 1} of ${files.length}… (${file.name})`;
+        progressBar.value = 0;
+
+        try {
+          await new Promise((resolve, reject) => {
+            const timestamp = Date.now();
+            const ext = file.name.split('.').pop();
+            const fileName = `gallery/${timestamp}_${Math.random().toString(36).substring(2)}.${ext}`;
+            const storageRef = storage.ref(fileName);
+            const uploadTask = storageRef.put(file);
+
+            uploadTask.on('state_changed',
+              (snapshot) => {
+                progressBar.value = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              },
+              (error) => reject(error),
+              () => {
+                uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                  return db.collection('gallery').add({
+                    url: downloadURL,
+                    category: category,
+                    sortOrder: Date.now() + i,
+                    uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
+                  });
+                }).then(resolve).catch(reject);
+              }
+            );
+          });
+          completed++;
+        } catch (err) {
+          console.error('Upload failed for', file.name, err);
+          failed++;
+        }
+      }
+
+      // Reset everything
+      fileInput.value = '';
+      window._pendingFiles = [];
+      const grid = document.getElementById('previewGrid');
+      grid.innerHTML = '';
+      grid.style.display = 'none';
+      progressDiv.style.display = 'none';
+      progressBar.value = 0;
+      uploadBtn.disabled = false;
+      uploadBtn.textContent = 'ADD PHOTOS';
+      document.getElementById('uploadArea').querySelector('p').innerHTML = '<strong>Tap to choose photos</strong><br>or drag and drop here<br><span style="color:var(--neon);font-size:12px;letter-spacing:1px;">SELECT MULTIPLE AT ONCE</span>';
+
+      if (failed === 0) {
+        showToast(`✅ ${completed} photo${completed > 1 ? 's' : ''} uploaded successfully!`);
+      } else {
+        showToast(`⚠️ ${completed} uploaded, ${failed} failed.`);
+      }
+    }
+
+    // Keep old name as alias so nothing else breaks
+    function uploadPhoto() { uploadPhotos(); }
+
+    // ========== GALLERY LOAD WITH DRAG-TO-REORDER ==========
+    function loadGallery() {
+      const galleryContainer = document.getElementById('adminGallery');
+      galleryContainer.innerHTML = '';
+
+      db.collection('gallery').orderBy('sortOrder', 'asc').onSnapshot((querySnapshot) => {
+        // If some docs lack sortOrder, fall back secondary sort by uploadedAt
+        let docs = [];
+        querySnapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
+        docs.sort((a, b) => {
+          if (a.sortOrder !== undefined && b.sortOrder !== undefined) return a.sortOrder - b.sortOrder;
+          if (a.sortOrder !== undefined) return -1;
+          if (b.sortOrder !== undefined) return 1;
+          return 0;
+        });
+
+        galleryContainer.innerHTML = '';
+        if (docs.length === 0) {
+          galleryContainer.innerHTML = '<p style="text-align:center;color:#888;margin-top:20px;">No photos in gallery yet.</p>';
+          return;
+        }
+
+        const categories = {};
+        docs.forEach(item => {
+          const category = item.category || 'Uncategorized';
+          if (!categories[category]) categories[category] = [];
+          categories[category].push({ imageUrl: item.url, docId: item.id, sortOrder: item.sortOrder });
+        });
+
+        for (const category in categories) {
+          const catId = `gallery-${category.replace(/\s+/g,'-')}`;
+          const catDiv = document.createElement('div');
+          catDiv.className = 'gallery-category';
+          catDiv.innerHTML = `
+            <h3>${category}</h3>
+            <p style="text-align:center; font-size:12px; color:#888; margin-top:-10px; margin-bottom:10px;">Hold &amp; drag photos to reorder</p>
+            <div class="gallery-wrapper">
+              <div class="gallery-grid" id="${catId}" data-category="${category}"></div>
+            </div>
+          `;
+          galleryContainer.appendChild(catDiv);
+
+          const grid = catDiv.querySelector(`#${catId}`);
+          categories[category].forEach((item, index) => {
+            const cell = document.createElement('div');
+            cell.draggable = true;
+            cell.dataset.docId = item.docId;
+            cell.style.position = 'relative';
+            cell.style.cursor = 'grab';
+            cell.style.userSelect = 'none';
+            cell.innerHTML = `
+              <img src="${item.imageUrl}" alt="Cut" style="width:100%;height:250px;object-fit:cover;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.12); pointer-events:none;">
+              <button class="remove-btn" onclick="removePhoto('${item.docId}')">✕ Remove</button>
+              <div style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.5);color:var(--accent);border-radius:4px;padding:3px 6px;font-size:11px;pointer-events:none;">⠿ DRAG</div>
+            `;
+            grid.appendChild(cell);
+          });
+
+          initDragReorder(grid);
+        }
+      });
+    }
+
+    // ========== DRAG & DROP REORDER ==========
+    function initDragReorder(grid) {
+      let dragSrc = null;
+
+      grid.addEventListener('dragstart', e => {
+        dragSrc = e.target.closest('[draggable]');
+        if (!dragSrc) return;
+        dragSrc.style.opacity = '0.4';
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      grid.addEventListener('dragover', e => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const target = e.target.closest('[draggable]');
+        if (target && target !== dragSrc) {
+          const rect = target.getBoundingClientRect();
+          const after = e.clientX > rect.left + rect.width / 2;
+          if (after) {
+            grid.insertBefore(dragSrc, target.nextSibling);
+          } else {
+            grid.insertBefore(dragSrc, target);
+          }
+        }
+      });
+
+      grid.addEventListener('dragend', e => {
+        if (dragSrc) dragSrc.style.opacity = '';
+        dragSrc = null;
+
+        // Save new order to Firestore
+        const cells = Array.from(grid.querySelectorAll('[draggable]'));
+        const batch = db.batch();
+        cells.forEach((cell, index) => {
+          const docId = cell.dataset.docId;
+          if (docId) {
+            batch.update(db.collection('gallery').doc(docId), { sortOrder: index });
+          }
+        });
+        batch.commit()
+          .then(() => showToast('✅ Photo order saved.'))
+          .catch(err => showToast('❌ Failed to save order.', false));
+      });
+
+      // Touch support (long-press drag)
+      let touchDragEl = null, touchClone = null, touchOffsetX = 0, touchOffsetY = 0, longPressTimer = null;
+
+      grid.addEventListener('touchstart', e => {
+        const cell = e.target.closest('[draggable]');
+        if (!cell) return;
+        longPressTimer = setTimeout(() => {
+          touchDragEl = cell;
+          const rect = cell.getBoundingClientRect();
+          touchOffsetX = e.touches[0].clientX - rect.left;
+          touchOffsetY = e.touches[0].clientY - rect.top;
+          touchClone = cell.cloneNode(true);
+          touchClone.style.cssText = `position:fixed;top:${rect.top}px;left:${rect.left}px;width:${rect.width}px;opacity:0.7;z-index:9999;pointer-events:none;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.4);transition:none;`;
+          document.body.appendChild(touchClone);
+          cell.style.opacity = '0.3';
+          navigator.vibrate && navigator.vibrate(50);
+        }, 400);
+      }, { passive: true });
+
+      grid.addEventListener('touchmove', e => {
+        if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+        if (!touchDragEl) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        touchClone.style.top = (touch.clientY - touchOffsetY) + 'px';
+        touchClone.style.left = (touch.clientX - touchOffsetX) + 'px';
+        // Find element underneath
+        touchClone.style.display = 'none';
+        const el = document.elementFromPoint(touch.clientX, touch.clientY);
+        touchClone.style.display = '';
+        const target = el && el.closest('[draggable]');
+        if (target && target !== touchDragEl && target.parentElement === grid) {
+          const rect = target.getBoundingClientRect();
+          const after = touch.clientX > rect.left + rect.width / 2;
+          if (after) grid.insertBefore(touchDragEl, target.nextSibling);
+          else grid.insertBefore(touchDragEl, target);
+        }
+      }, { passive: false });
+
+      const endTouch = () => {
+        if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+        if (!touchDragEl) return;
+        touchDragEl.style.opacity = '';
+        touchClone && touchClone.remove();
+        touchClone = null;
+        // Save order
+        const cells = Array.from(grid.querySelectorAll('[draggable]'));
+        const batch = db.batch();
+        cells.forEach((cell, index) => {
+          const docId = cell.dataset.docId;
+          if (docId) batch.update(db.collection('gallery').doc(docId), { sortOrder: index });
+        });
+        batch.commit()
+          .then(() => showToast('✅ Photo order saved.'))
+          .catch(() => showToast('❌ Failed to save order.', false));
+        touchDragEl = null;
+      };
+
+      grid.addEventListener('touchend', endTouch, { passive: true });
+      grid.addEventListener('touchcancel', endTouch, { passive: true });
+    }
+
+    function removePhoto(docId) {
+      if (!confirm("Remove this photo?")) return;
+      db.collection('gallery').doc(docId).delete()
+        .then(() => showToast('🗑 Photo removed.'))
+        .catch((error) => alert('Error removing photo: ' + error.message));
+    }
+
+    // ========== RESERVATIONS ==========
+    function loadReservations() {
+      const reservationsContainer = document.getElementById('reservationsList');
+      db.collection('bookings').orderBy("date", "asc").onSnapshot(snapshot => {
+        reservationsContainer.innerHTML = '';
+
+        if (snapshot.empty) {
+          reservationsContainer.innerHTML = "<p style='color:#888;text-align:center;'>No reservations found.</p>";
+          return;
+        }
+
+        const now = new Date();
+        const todayY = now.getFullYear(), todayM = now.getMonth(), todayD = now.getDate();
+        const tomorrow = new Date(now);
+        tomorrow.setDate(todayD + 1);
+
+        const todayList = [], tomorrowList = [], upcomingList = [], pastList = [];
+
+        snapshot.forEach(doc => {
+          const booking = doc.data();
+          if (typeof booking.date !== "string") return;
+
+          const [y, m, d] = booking.date.split('-').map(Number);
+          const bDate = new Date(y, m - 1, d);
+          const bY = bDate.getFullYear(), bM = bDate.getMonth(), bD = bDate.getDate();
+
+          const formattedDate = bDate.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+          const bookingWithSort = { id: doc.id, ...booking, date: formattedDate, timeSort: convertTimeToMinutes(booking.time) };
+
+          if (bY === todayY && bM === todayM && bD === todayD) todayList.push(bookingWithSort);
+          else if (bY === tomorrow.getFullYear() && bM === tomorrow.getMonth() && bD === tomorrow.getDate()) tomorrowList.push(bookingWithSort);
+          else if (bDate > tomorrow) upcomingList.push(bookingWithSort);
+          else if (bDate < new Date(todayY, todayM, todayD)) pastList.push(bookingWithSort);
+        });
+
+        const sortByTime = (a, b) => a.timeSort - b.timeSort;
+        todayList.sort(sortByTime); tomorrowList.sort(sortByTime);
+        upcomingList.sort(sortByTime); pastList.sort(sortByTime);
+
+        function renderGroup(title, list, badgeClass) {
+          if (!list.length) return;
+          reservationsContainer.innerHTML += `<div class="reservation-group">${title}</div>`;
+          list.forEach(booking => {
+            const isCancelled = booking.status === 'Cancelled';
+            reservationsContainer.innerHTML += `
+              <div class="reservation-card" data-id="${booking.id}" style="${isCancelled ? 'opacity:0.7; border-left-color:var(--red-deep);' : ''}">
+                <div class="reservation-header">
+                  <h3>${booking.name}</h3>
+                  <div style="display:flex; gap:6px; align-items:center;">
+                    ${isCancelled ? `<span class="badge" style="background:var(--red-deep); color:var(--cream);">Cancelled · ${(booking.cancelledBy === 'client' ? 'Client' : 'Admin')}</span>` : `<span class="badge ${badgeClass}">${title}</span>`}
+                  </div>
+                </div>
+                <div style="display:grid; grid-template-columns:120px 1fr; gap:4px 14px; font-size:13px; margin:0;">
+                  <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Ref #</span><span style="font-family:'Playfair Display',serif; font-weight:600;">${booking.bookingNumber || "—"}</span>
+                  <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Phone</span><span>${booking.phone}</span>
+                  <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Date</span><span>${booking.date}</span>
+                  <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Time</span><span>${booking.time}</span>
+                  <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Service</span><span>${booking.service}</span>
+                  ${booking.total ? `<span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Total</span><span style="font-family:'Playfair Display',serif; font-weight:700; color:var(--text-ink);">$${Number(booking.total).toLocaleString()}</span>` : ''}
+                  <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Payment</span><span>${booking.deposit || "—"}</span>
+                  <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Status</span><span class="${booking.status === 'Completed' ? 'status-completed' : booking.status === 'Cancelled' ? 'status-not' : booking.status === 'Not Completed' ? 'status-not' : 'status-none'}">${booking.status || "Not set"}</span>
+                </div>
+                <div class="action-buttons">
+                  ${!isCancelled
+                    ? `<button class="cancel-btn" onclick="cancelReservation('${booking.id}')">Cancel</button>`
+                    : `<button class="cancel-btn" disabled style="opacity:0.4; cursor:not-allowed;">Cancelled</button>`
+                  }
+                  <button class="deposit-btn" onclick="updateDeposit('${booking.id}')">Payment</button>
+                  ${title === "Today" && !isCancelled ? `<button class="status-btn" onclick="updateStatus('${booking.id}')">Status</button>` : ""}
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        renderGroup("Today", todayList, "today");
+        renderGroup("Tomorrow", tomorrowList, "tomorrow");
+        renderGroup("Upcoming", upcomingList, "upcoming");
+        renderGroup("Past", pastList, "past");
+      });
+    }
+
+    function convertTimeToMinutes(timeStr) {
+      if (!timeStr) return 0;
+      const timeParts = timeStr.trim().split(' ');
+      if (timeParts.length !== 2) return 0;
+      const [time, period] = timeParts;
+      const [hours, minutes] = time.split(':').map(Number);
+      if (isNaN(hours) || isNaN(minutes)) return 0;
+      let totalMinutes = (hours * 60) + minutes;
+      if (period.toUpperCase() === 'PM' && hours !== 12) totalMinutes += (12 * 60);
+      if (period.toUpperCase() === 'AM' && hours === 12) totalMinutes -= (12 * 60);
+      return totalMinutes;
+    }
+
+    function searchReservations() {
+      const query = document.getElementById("reservationSearch").value.toLowerCase();
+      document.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"));
+      if (!query) return;
+
+      const cards = document.querySelectorAll(".reservation-card");
+      for (let card of cards) {
+        if (card.innerText.toLowerCase().includes(query)) {
+          card.classList.add("highlighted");
+          card.scrollIntoView({ behavior: "smooth", block: "center" });
+          break;
+        }
+      }
+    }
+
+    function clearReservations() {
+      const confirmInput = document.getElementById('clearInput').value.trim();
+      if (confirmInput !== 'CONFIRM') { alert('TYPE "CONFIRM" TO CLEAR PAST RESERVATIONS.'); return; }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      db.collection('bookings').get().then(snapshot => {
+        const batch = db.batch();
+        snapshot.forEach(doc => {
+          const booking = doc.data();
+          if (booking.date && typeof booking.date === "string") {
+            const [year, month, day] = booking.date.split('-').map(Number);
+            const bookingDate = new Date(year, month - 1, day);
+            bookingDate.setHours(0, 0, 0, 0);
+            if (bookingDate < today) batch.delete(doc.ref);
+          }
+        });
+        return batch.commit();
+      }).then(() => {
+        showToast('✅ Past reservations cleared.');
+        document.getElementById('clearInput').value = '';
+      }).catch(err => {
+        console.error(err);
+        alert("Failed to clear past reservations.");
+      });
+    }
+
+    function cancelReservation(orderId) {
+      document.getElementById('adminCancelBookingId').value = orderId;
+      document.getElementById('adminCancelModal').style.display = 'flex';
+    }
+
+    function confirmAdminCancel() {
+      const orderId = document.getElementById('adminCancelBookingId').value;
+      if (!orderId) return;
+      db.collection("bookings").doc(orderId).update({ status: 'Cancelled', cancelledBy: 'admin' })
+        .then(() => { closeAdminCancelModal(); showToast('🗑 Booking cancelled.'); })
+        .catch(err => { closeAdminCancelModal(); alert("Failed to cancel: " + err.message); });
+    }
+
+    function closeAdminCancelModal() {
+      document.getElementById('adminCancelModal').style.display = 'none';
+      document.getElementById('adminCancelBookingId').value = '';
+    }
+
+    // ========== DEPOSIT ==========
+    let currentBookingId = null;
+
+    function updateDeposit(bookingId) {
+      currentBookingId = bookingId;
+      document.querySelectorAll('input[name="depositChoice"]').forEach(r => r.checked = false);
+      document.getElementById('depositModal').style.display = 'flex';
+    }
+
+    function confirmDeposit() {
+      const choice = document.querySelector('input[name="depositChoice"]:checked');
+      if (!choice) { showToast("⚠️ Please select an option.", false); return; }
+
+      db.collection('bookings').doc(currentBookingId).update({ deposit: choice.value })
+        .then(() => { closeDepositModal(); showToast(`✅ Payment status: ${choice.value}`); })
+        .catch(error => showToast("❌ Failed to update payment.", false));
+    }
+
+    function closeDepositModal() {
+      document.getElementById('depositModal').style.display = 'none';
+      currentBookingId = null;
+    }
+
+    // ========== STATUS ==========
+    let currentStatusBookingId = null;
+
+    function updateStatus(bookingId) {
+      currentStatusBookingId = bookingId;
+      document.querySelectorAll('input[name="statusChoice"]').forEach(r => r.checked = false);
+      document.getElementById('statusModal').style.display = 'flex';
+    }
+
+    function confirmStatus() {
+      const choice = document.querySelector('input[name="statusChoice"]:checked');
+      if (!choice) { alert("Please select an option."); return; }
+
+      db.collection('bookings').doc(currentStatusBookingId).update({ status: choice.value })
+        .then(() => { closeStatusModal(); loadReservations(); })
+        .catch(error => alert("Failed to update status."));
+    }
+
+    function closeStatusModal() {
+      document.getElementById('statusModal').style.display = 'none';
+      currentStatusBookingId = null;
+    }
+
+    // ========== UNAVAILABLE DAYS ==========
+    async function addUnavailableDate() {
+      const date = document.getElementById('unavailableDateInput').value;
+      const allDay = document.getElementById('allDayCheckbox').checked;
+      const startTime = document.getElementById('startTimeInput').value;
+      const endTime = document.getElementById('endTimeInput').value;
+
+      if (!date) { alert("Please select a date."); return; }
+      if (!allDay && (!startTime || !endTime)) { alert("Please provide both start and end time."); return; }
+
+      const [yyyy, mm, dd] = date.split("-");
+      const finalDate = `${yyyy}-${mm}-${dd}`;
+
+      try {
+        const snapshot = await db.collection("bookings").where("date", "==", finalDate).get();
+        const conflicts = [];
+
+        if (!snapshot.empty) {
+          snapshot.forEach(doc => {
+            const booking = doc.data();
+            const bookingTime = booking.time || null;
+
+            if (allDay) {
+              conflicts.push({ id: doc.id, ...booking });
+            } else if (bookingTime) {
+              const bookingMinutes = convertTimeToMinutes(bookingTime);
+              const startMinutes = convertTimeToMinutes(startTime);
+              const endMinutes = convertTimeToMinutes(endTime);
+              if (bookingMinutes >= startMinutes && bookingMinutes <= endMinutes) conflicts.push({ id: doc.id, ...booking });
+            }
+          });
+        }
+
+        if (conflicts.length > 0) { showConflictModal(conflicts); return; }
+
+        await db.collection("unavailableDays").add({
+          date: finalDate, allDay,
+          startTime: allDay ? null : startTime,
+          endTime: allDay ? null : endTime,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        document.getElementById('unavailableDateInput').value = '';
+        document.getElementById('startTimeInput').value = '';
+        document.getElementById('endTimeInput').value = '';
+        document.getElementById('allDayCheckbox').checked = true;
+        document.getElementById('timeInputs').style.display = 'none';
+
+        showToast('✅ Unavailable day added.');
+      } catch (error) {
+        console.error(error);
+        alert("Failed to add unavailable day.");
+      }
+    }
+
+    function loadUnavailableDates() {
+      const list = document.getElementById('unavailableDatesList');
+      db.collection('unavailableDays').orderBy('date').onSnapshot(snapshot => {
+        list.innerHTML = '';
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          let formattedDate = d.date;
+          if (d.date && d.date.includes("-")) {
+            const [yyyy, mm, dd] = d.date.split("-");
+            formattedDate = new Date(yyyy, mm - 1, dd).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+          }
+          let text = `${formattedDate} — ${d.allDay ? 'All Day' : `${d.startTime} to ${d.endTime}`}`;
+          list.innerHTML += `<li style="margin-bottom:8px;">${text} <button onclick="removeUnavailableDate('${doc.id}')" style="background:#e53935; color:white; border:none; padding:3px 8px; border-radius:4px; cursor:pointer; font-size:12px; margin-bottom:0;">Remove</button></li>`;
+        });
+      });
+    }
+
+    function removeUnavailableDate(id) { db.collection('unavailableDays').doc(id).delete(); }
+
+    // ========== CONFLICT MODAL ==========
+    function showConflictModal(conflicts) {
+      const conflictList = document.getElementById('conflictList');
+      conflictList.innerHTML = '';
+      conflicts.forEach(booking => {
+        conflictList.innerHTML += `
+          <div style="padding:12px; margin-bottom:12px; border:1px solid #ddd; border-radius:8px; background:#fafafa;">
+            <p style="margin:4px 0;font-size:14px;"><strong>Name:</strong> ${booking.name || "N/A"}</p>
+            <p style="margin:4px 0;font-size:14px;"><strong>Phone:</strong> ${booking.phone || "N/A"}</p>
+            <p style="margin:4px 0;font-size:14px;"><strong>Service:</strong> ${booking.service || "N/A"}</p>
+            <p style="margin:4px 0;font-size:14px;"><strong>Date:</strong> ${booking.date}</p>
+            <p style="margin:4px 0;font-size:14px;"><strong>Time:</strong> ${booking.time || "N/A"}</p>
+            <button onclick="goToReservationsAndHighlight('${booking.id}')" style="margin-top:8px; background:var(--accent); color:var(--primary); border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold; margin-bottom:0;">Go to Reservations</button>
+          </div>
+        `;
+      });
+      document.getElementById('conflictModal').style.display = 'flex';
+    }
+
+    function goToReservationsAndHighlight(bookingId) {
+      closeConflictModal();
+      showSection('reservationsPage');
+      setTimeout(() => {
+        const targetCard = document.querySelector(`[data-id="${bookingId}"]`);
+        if (targetCard) {
+          document.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"));
+          targetCard.classList.add("highlighted");
+          targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
+          setTimeout(() => targetCard.classList.remove("highlighted"), 6000);
+        }
+      }, 500);
+    }
+
+    function closeConflictModal() {
+      document.getElementById('conflictModal').style.display = 'none';
+    }
+
+    // ========== TOAST ==========
+    function showToast(message, success = true) {
+      const toast = document.getElementById("toast");
+      toast.innerText = message;
+      toast.style.backgroundColor = success ? "#4CAF50" : "#e53935";
+      toast.style.visibility = "visible";
+      toast.style.opacity = "1";
+      toast.style.bottom = "50px";
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.bottom = "30px";
+        setTimeout(() => { toast.style.visibility = "hidden"; }, 500);
+      }, 3000);
+    }
+
+    // ========== ADMIN UID GUARD ==========
+    const ADMIN_UID = "Tms2VoEM3RUgsLmCPS6ROM8xobe2";
+
+    (function () {
+      const overlay = document.getElementById('accessOverlay');
+      const status  = document.getElementById('accessStatus');
+      const content = document.getElementById('dashboardContent');
+
+      let resolved = false;
+
+      // Helper: show a recoverable error on the overlay instead of hanging forever
+      function showOverlayError(msg) {
+        if (resolved) return;
+        resolved = true;
+        status.textContent = msg;
+        status.style.color = '#FF2052';
+        // Add a "Back to sign-in" button so the user is never trapped
+        if (!document.getElementById('overlayRetryBtn')) {
+          const btn = document.createElement('button');
+          btn.id = 'overlayRetryBtn';
+          btn.textContent = 'BACK TO SIGN-IN';
+          btn.style.cssText = "margin-top:18px;padding:10px 22px;background:transparent;color:#00D4FF;border:1px solid #00D4FF;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:3px;font-size:12px;cursor:pointer;text-transform:uppercase;border-radius:2px;";
+          btn.onclick = () => { window.location.href = 'index.html'; };
+          overlay.appendChild(btn);
+        }
+      }
+
+      // Watchdog: if auth state hasn't resolved within 6s, something is wrong
+      // (third-party cookies blocked, network issue, popup blockers, etc.)
+      const watchdog = setTimeout(() => {
+        if (!resolved) {
+          console.error('[Auth] onAuthStateChanged did not fire within 6s.');
+          showOverlayError('Sign-in session not detected. Please sign in again.');
+        }
+      }, 6000);
+
+      try {
+        // Force LOCAL persistence so session survives the index.html → dashboard.html navigation
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+          .catch(err => console.warn('[Auth] setPersistence failed:', err));
+
+        firebase.auth().onAuthStateChanged(user => {
+          console.log('[Auth] State changed. User:', user ? user.uid : 'null');
+          clearTimeout(watchdog);
+
+          if (!user) {
+            resolved = true;
+            window.location.replace('index.html');
+            return;
+          }
+          if (user.uid !== ADMIN_UID) {
+            resolved = true;
+            firebase.auth().signOut()
+              .finally(() => { window.location.replace('index.html'); });
+            return;
+          }
+
+          // Verified admin — reveal dashboard
+          resolved = true;
+          status.textContent = 'ACCESS GRANTED';
+          status.style.color = '#4CAF50';
+          setTimeout(() => {
+            overlay.style.transition = 'opacity 0.4s';
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+              overlay.style.display = 'none';
+              content.style.display = 'block';
+            }, 400);
+          }, 600);
+
+          try { loadGallery(); } catch (e) { console.error('loadGallery:', e); }
+          try { showSection('reservationsPage'); } catch (e) { console.error('showSection:', e); }
+          try { loadReservations(); } catch (e) { console.error('loadReservations:', e); }
+          try { loadUnavailableDates(); } catch (e) { console.error('loadUnavailableDates:', e); }
+        }, err => {
+          // Error callback for onAuthStateChanged
+          clearTimeout(watchdog);
+          console.error('[Auth] onAuthStateChanged error:', err);
+          showOverlayError('Auth error: ' + (err.message || err.code || 'unknown'));
+        });
+      } catch (err) {
+        clearTimeout(watchdog);
+        console.error('[Auth] Setup threw:', err);
+        showOverlayError('Setup error: ' + (err.message || err));
+      }
+    })();
+  </script>
+  <!-- Admin Cancel Booking Modal -->
+  <div id="adminCancelModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.55); justify-content:center; align-items:center; z-index:2000;">
+    <div style="background:#fff; padding:28px 24px; border-radius:14px; max-width:320px; width:90%; text-align:center; box-shadow:0 8px 30px rgba(0,0,0,0.25); border-top:4px solid #e53935;">
+      <input type="hidden" id="adminCancelBookingId"/>
+      <div style="font-size:40px; margin-bottom:10px;">⚠️</div>
+      <h3 style="margin:0 0 8px; font-family:'Bebas Neue',cursive; letter-spacing:2px; color:#1a1a1a; font-size:22px;">CANCEL BOOKING?</h3>
+      <p style="font-size:14px; color:#666; margin:0 0 22px; font-family:'Barlow',sans-serif; line-height:1.5;">This will mark the booking as <strong style="color:#e53935;">Cancelled</strong>. The client will still appear in the list with a cancelled status.</p>
+      <div style="display:flex; gap:10px; justify-content:center;">
+        <button onclick="closeAdminCancelModal()" style="flex:1; background:#eee; color:#333; border:none; padding:11px 16px; border-radius:6px; cursor:pointer; font-family:'Barlow',sans-serif; font-weight:700; margin-bottom:0; font-size:14px;">Keep</button>
+        <button onclick="confirmAdminCancel()" style="flex:1; background:#e53935; color:white; border:none; padding:11px 16px; border-radius:6px; cursor:pointer; font-family:'Barlow',sans-serif; font-weight:700; margin-bottom:0; font-size:14px;">Yes, Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- end #dashboardContent -->
+</body>
+</html>
