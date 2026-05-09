@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TRAVIS THE BARBER</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/dqqr9udcs/image/upload/v1777851528/TRAVIS_THE_BARBER_LOGO_y1lgfv.jpg">
-  <link rel="icon" type="image/png" sizes="16x16" href="https://res.cloudinary.com/dqqr9udcs/image/upload/v1777851528/TRAVIS_THE_BARBER_LOGO_y1lgfv.jpg">
-  <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/dqqr9udcs/image/upload/v1777851528/TRAVIS_THE_BARBER_LOGO_y1lgfv.jpg">
-  <link rel="apple-touch-icon" sizes="180x180" href="https://res.cloudinary.com/dqqr9udcs/image/upload/v1777851528/TRAVIS_THE_BARBER_LOGO_y1lgfv.jpg">
+  <title>WAVY D BARBERSHOP</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://res.cloudinary.com/dqqr9udcs/image/upload/v1778298011/WAVY_D_LOGO_e5klau.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://res.cloudinary.com/dqqr9udcs/image/upload/v1778298011/WAVY_D_LOGO_e5klau.jpg">
+  <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/dqqr9udcs/image/upload/v1778298011/WAVY_D_LOGO_e5klau.jpg">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://res.cloudinary.com/dqqr9udcs/image/upload/v1778298011/WAVY_D_LOGO_e5klau.jpg">
 
   <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -20,7 +20,7 @@
 
   <style>
     /* =========================================================
-       TRAVIS THE BARBER — Admin Dashboard
+       WAVY D BARBERSHOP — Admin Dashboard
        Neon Street Dark — matches index.html palette exactly
        Midnight black · Electric cyan · Neon red · Hot gold
        ========================================================= */
@@ -754,13 +754,12 @@
   </style>
 
   <div id="dashboardContent">
-  <div class="header-bar">TRAVIS <span class="brand-hot">THE</span> BARBER <span class="brand-admin">— ADMIN</span></div>
+  <div class="header-bar">WAVY <span class="brand-hot">D</span> BARBERSHOP <span class="brand-admin">— ADMIN</span></div>
 
   <div class="top-menu">
     <button onclick="showSection('gallerySection')">Gallery</button>
     <button onclick="showSection('reservationsPage')">Reservations</button>
     <button onclick="showSection('unavailableDaysSection')">Unavailable Days</button>
-    <button onclick="showSection('homeCallsSection')">🏠 Home Calls</button>
   </div>
 
   <!-- Gallery Management -->
@@ -776,7 +775,7 @@
     </div>
 
     <!-- Multi-file preview grid -->
-    <div id="previewGrid" style="display:none; display:none; gap:8px; flex-wrap:wrap; margin-bottom:14px;"></div>
+    <div id="previewGrid"></div>
 
     <!-- Upload Progress -->
     <div id="uploadProgress" style="display:none; margin-bottom:14px;">
@@ -832,13 +831,6 @@
       The Calendar
     </h3>
     <ul id="unavailableDatesList" style="font-family:'Inter',sans-serif; font-size:13px; list-style:none; padding:0;"></ul>
-  </div>
-
-  <!-- Home Call Requests Section -->
-  <div class="admin-container content-section" id="homeCallsSection">
-    <div class="admin-kicker">House Visits</div>
-    <h2>Home Call Requests</h2>
-    <div id="homeCallsList" style="margin-top:8px;"></div>
   </div>
 
   <!-- Conflict Modal -->
@@ -909,59 +901,6 @@
     function showSection(sectionId) {
       document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
       document.getElementById(sectionId).classList.add('active');
-      if (sectionId === 'homeCallsSection') loadHomeCalls();
-    }
-
-    // ========== HOME CALL REQUESTS ==========
-    function loadHomeCalls() {
-      const container = document.getElementById('homeCallsList');
-      container.innerHTML = '<p style="color:var(--text-dim); font-size:13px;">Loading…</p>';
-      db.collection('homeCallRequests').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
-        if (snapshot.empty) {
-          container.innerHTML = '<p style="color:var(--text-dim); font-size:13px; text-align:center; padding:30px 0;">No home call requests yet.</p>';
-          return;
-        }
-        container.innerHTML = '';
-        snapshot.forEach(doc => {
-          const r = doc.data();
-          const dateStr = r.date ? (() => { const [y,m,d] = r.date.split('-'); return new Date(y,m-1,d).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}); })() : 'N/A';
-          const statusColor = r.status === 'Quoted' ? '#b8ff6e' : r.status === 'Declined' ? 'var(--hot)' : 'var(--amber)';
-          container.innerHTML += `
-            <div style="background:var(--surface2); border:1px solid rgba(184,255,110,0.15); border-left:4px solid #b8ff6e; border-radius:8px; padding:16px; margin-bottom:14px;">
-              <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-                <div>
-                  <div style="font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:16px; color:var(--text); letter-spacing:1px;">🏠 ${r.name || 'N/A'}</div>
-                  <div style="font-size:11px; color:#b8ff6e; font-family:'Barlow Condensed',sans-serif; letter-spacing:2px; text-transform:uppercase;">Ref: ${r.refNum || doc.id}</div>
-                </div>
-                <span style="background:rgba(184,255,110,0.1); border:1px solid ${statusColor}; color:${statusColor}; padding:3px 10px; border-radius:20px; font-size:11px; font-family:'Barlow Condensed',sans-serif; letter-spacing:2px; font-weight:700; white-space:nowrap;">${r.status || 'Pending'}</span>
-              </div>
-              <div style="font-size:13px; color:var(--text); line-height:1.9;">
-                <div>📞 <strong>Phone:</strong> ${r.phone || 'N/A'}</div>
-                <div>📅 <strong>Date:</strong> ${dateStr}</div>
-                <div>💈 <strong>Service:</strong> ${r.service || 'N/A'}</div>
-                <div>📍 <strong>Location:</strong> ${r.location || 'N/A'}</div>
-                ${r.notes ? `<div>📝 <strong>Notes:</strong> ${r.notes}</div>` : ''}
-                <div style="color:var(--amber); margin-top:4px;">⚠️ Travel fee: <strong>$5,000+</strong> added to cut price</div>
-              </div>
-              <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
-                <button onclick="updateHomeCallStatus('${doc.id}','Quoted')" style="padding:7px 14px; background:rgba(184,255,110,0.15); border:1px solid #b8ff6e; color:#b8ff6e; border-radius:5px; font-size:11px; font-family:'Barlow Condensed',sans-serif; letter-spacing:2px; font-weight:700; text-transform:uppercase; cursor:pointer;">✓ Quoted</button>
-                <button onclick="updateHomeCallStatus('${doc.id}','Declined')" style="padding:7px 14px; background:rgba(255,32,82,0.1); border:1px solid var(--hot); color:var(--hot); border-radius:5px; font-size:11px; font-family:'Barlow Condensed',sans-serif; letter-spacing:2px; font-weight:700; text-transform:uppercase; cursor:pointer;">✕ Decline</button>
-                <button onclick="deleteHomeCall('${doc.id}')" style="padding:7px 14px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:var(--text-dim); border-radius:5px; font-size:11px; font-family:'Barlow Condensed',sans-serif; letter-spacing:2px; font-weight:700; text-transform:uppercase; cursor:pointer;">🗑 Delete</button>
-              </div>
-            </div>
-          `;
-        });
-      });
-    }
-
-    function updateHomeCallStatus(id, status) {
-      db.collection('homeCallRequests').doc(id).update({ status });
-    }
-
-    function deleteHomeCall(id) {
-      if (confirm('Delete this home call request?')) {
-        db.collection('homeCallRequests').doc(id).delete();
-      }
     }
 
     function toggleTimeInputs() {
