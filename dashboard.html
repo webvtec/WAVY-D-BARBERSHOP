@@ -1597,14 +1597,14 @@
         }
       }
 
-      // Watchdog: if auth state hasn't resolved within 6s, something is wrong
+      // Watchdog: if auth state hasn't resolved within 12s, something is wrong
       // (third-party cookies blocked, network issue, popup blockers, etc.)
       const watchdog = setTimeout(() => {
         if (!resolved) {
-          console.error('[Auth] onAuthStateChanged did not fire within 6s.');
+          console.error('[Auth] onAuthStateChanged did not fire within 12s.');
           showOverlayError('Sign-in session not detected. Please sign in again.');
         }
-      }, 6000);
+      }, 12000);
 
       try {
         // Force LOCAL persistence so session survives the index.html → dashboard.html navigation
